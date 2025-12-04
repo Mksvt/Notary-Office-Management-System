@@ -19,6 +19,18 @@ class ClientController {
         } else {
             $clients = $clientModel->findAll('last_name, first_name');
         }
+        
+        // Фільтрувати клієнтів для нотаріуса - показувати тільки своїх
+        if ($_SESSION['user_role'] === 'notary') {
+            $db = Database::getInstance()->getConnection();
+            $sql = "SELECT DISTINCT c.* FROM clients c
+                    INNER JOIN notarial_cases nc ON c.client_id = nc.client_id
+                    WHERE nc.notary_id = :notary_id
+                    ORDER BY c.last_name, c.first_name";
+            $stmt = $db->prepare($sql);
+            $stmt->execute(['notary_id' => $_SESSION['related_id']]);
+            $clients = $stmt->fetchAll();
+        }
 
         $title = 'Клієнти';
         $flash = getFlashMessage();

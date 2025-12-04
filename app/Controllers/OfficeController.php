@@ -10,7 +10,20 @@ class OfficeController {
         requireAuth();
 
         $officeModel = new Office();
-        $offices = $officeModel->findAll('name');
+        
+        // Нотаріус бачить тільки свій офіс
+        if ($_SESSION['user_role'] === 'notary') {
+            require_once ROOT_PATH . '/app/Models/Notary.php';
+            $notaryModel = new Notary();
+            $notary = $notaryModel->findById($_SESSION['related_id']);
+            if ($notary) {
+                $offices = [$officeModel->findById($notary['office_id'])];
+            } else {
+                $offices = [];
+            }
+        } else {
+            $offices = $officeModel->findAll('name');
+        }
 
         $title = 'Офіси';
         $flash = getFlashMessage();

@@ -47,7 +47,13 @@ class CaseController {
         $notaryModel = new Notary();
         $serviceModel = new Service();
 
-        $clients = $clientModel->findAll('last_name, first_name');
+        // Нотаріус бачить тільки своїх клієнтів
+        if ($_SESSION['user_role'] === 'notary') {
+            $clients = $clientModel->getClientsByNotary($_SESSION['related_id']);
+        } else {
+            $clients = $clientModel->findAll('last_name, first_name');
+        }
+        
         $notaries = $notaryModel->getActiveNotaries();
         $services = $serviceModel->getActiveServices();
 
@@ -102,7 +108,13 @@ class CaseController {
         $notaryModel = new Notary();
         $serviceModel = new Service();
 
-        $clients = $clientModel->findAll('last_name, first_name');
+        // Нотаріус бачить тільки своїх клієнтів
+        if ($_SESSION['user_role'] === 'notary') {
+            $clients = $clientModel->getClientsByNotary($_SESSION['related_id']);
+        } else {
+            $clients = $clientModel->findAll('last_name, first_name');
+        }
+        
         $notaries = $notaryModel->getActiveNotaries();
         $services = $serviceModel->getActiveServices();
         

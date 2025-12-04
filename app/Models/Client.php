@@ -105,4 +105,14 @@ class Client extends BaseModel {
         $result = $stmt->fetch();
         return $result['total'];
     }
+
+    public function getClientsByNotary($notaryId) {
+        $sql = "SELECT DISTINCT c.* FROM clients c 
+                INNER JOIN notarial_cases nc ON c.client_id = nc.client_id 
+                WHERE nc.notary_id = :notary_id 
+                ORDER BY c.last_name, c.first_name";
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['notary_id' => $notaryId]);
+        return $stmt->fetchAll();
+    }
 }

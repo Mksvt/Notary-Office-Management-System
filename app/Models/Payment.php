@@ -77,6 +77,24 @@ class Payment extends BaseModel {
         return $stmt->fetch();
     }
 
+    public function getPaymentsByNotary($notaryId) {
+        $sql = "SELECT 
+                    p.*,
+                    nc.case_number,
+                    CONCAT(c.last_name, ' ', c.first_name) as client_name,
+                    s.name as service_name
+                FROM payments p
+                INNER JOIN notarial_cases nc ON p.case_id = nc.case_id
+                INNER JOIN clients c ON nc.client_id = c.client_id
+                INNER JOIN services s ON nc.service_id = s.service_id
+                WHERE nc.notary_id = :notary_id
+                ORDER BY p.payment_date DESC, p.payment_id DESC";
+        
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(['notary_id' => $notaryId]);
+        return $stmt->fetchAll();
+    }
+
     public function getStatusLabel($status) {
         $labels = [
             'pending' => 'Очікується',

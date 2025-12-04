@@ -5,6 +5,7 @@
 
 require_once ROOT_PATH . '/app/Models/Notary.php';
 require_once ROOT_PATH . '/app/Models/Office.php';
+require_once ROOT_PATH . '/app/Models/User.php';
 
 class NotaryController {
     public function index() {
@@ -76,7 +77,22 @@ class NotaryController {
             $notaryId = $notaryModel->create($data);
             
             if ($notaryId) {
-                setFlashMessage('Нотаріуса успішно створено', 'success');
+                // Створити користувача для нотаріуса
+                $userModel = new User();
+                $username = strtolower(transliterate($data['last_name']));
+                $tempPassword = generateRandomPassword();
+                
+                // Перевірити, чи не існує такий username
+                $counter = 1;
+                $originalUsername = $username;
+                while ($userModel->findByUsername($username)) {
+                    $username = $originalUsername . $counter;
+                    $counter++;
+                }
+                
+                $userModel->createUser($username, $tempPassword, 'notary', $notaryId);
+                
+                setFlashMessage("Нотаріуса створено. Логін: $username, Пароль: $tempPassword", 'success');
                 redirect('/notaries');
             } else {
                 $errors['general'] = 'Помилка при створенні нотаріуса';

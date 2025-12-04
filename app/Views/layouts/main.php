@@ -15,9 +15,9 @@
             <a href="<?= BASE_URL ?>/clients">Клієнти</a>
             <?php if ($_SESSION['user_role'] === 'admin'): ?>
                 <a href="<?= BASE_URL ?>/notaries">Нотаріуси</a>
-                <a href="<?= BASE_URL ?>/offices">Офіси</a>
-                <a href="<?= BASE_URL ?>/services">Послуги</a>
             <?php endif; ?>
+            <a href="<?= BASE_URL ?>/offices">Офіси</a>
+            <a href="<?= BASE_URL ?>/services">Послуги</a>
             <a href="<?= BASE_URL ?>/payments">Платежі</a>
         </nav>
         <div class="user-info">

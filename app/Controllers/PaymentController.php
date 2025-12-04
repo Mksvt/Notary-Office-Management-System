@@ -12,7 +12,13 @@ class PaymentController {
         requireAuth();
 
         $paymentModel = new Payment();
-        $payments = $paymentModel->getAllWithDetails();
+        
+        // Нотаріус бачить тільки платежі по своїх справах
+        if ($_SESSION['user_role'] === 'notary') {
+            $payments = $paymentModel->getPaymentsByNotary($_SESSION['related_id']);
+        } else {
+            $payments = $paymentModel->getAllWithDetails();
+        }
 
         // Фільтрація за статусом
         $statusFilter = $_GET['status'] ?? '';
