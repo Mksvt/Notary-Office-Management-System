@@ -1,0 +1,17 @@
+RewriteEngine On
+
+# Якщо файл або директорія існують, показати їх
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Всі інші запити направляти на index.php
+RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]
+
+# Захист від перегляду директорій
+Options -Indexes
+
+# Захист .htaccess
+<Files .htaccess>
+    Order allow,deny
+    Deny from all
+</Files>
